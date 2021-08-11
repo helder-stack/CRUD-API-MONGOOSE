@@ -1,56 +1,52 @@
-const mongoose = require('mongoose')
 const studentModel = require('../models/Student')
 const studentFactory = require('../factory/Student')
 
-class StudentService {
+class Student{
 
-    async getStudentById(req, res) {
-        res.send(await studentModel.find({ "_id": req.params.id }))
+    async getStudentById(id){
+        return await studentModel.find({ "_id": id })
     }
-
-    async newStudent(req, res) {
-
-        let newStudentFactory = await studentFactory.Build(req.body.name, req.body.lastName, req.body.age)
+    
+    async newStudent(name, lastName, age){
+        let newStudentFactory = await studentFactory.Build(name, lastName, age)
 
         if (newStudentFactory) {
 
             let student = new studentModel(newStudentFactory)
 
             student.save()
-            res.send("Cadastrado")
+            return 200
 
         } else {
-            res.send(400)
+            return 400
         }
-
     }
 
-    async getStudents(req, res) {
-        res.send(await studentModel.find())
+    async getStudents(){
+        return studentModel.find()
     }
-
-    async deleteStudent(req, res) {
-        res.send(await studentModel.findByIdAndDelete(req.params.id))
+    
+    async deleteStudent(id){
+        return await studentModel.findByIdAndDelete(id)
     }
-
-    async updateStudent(req, res){
-        let updateStudentFactory = await studentFactory.Build(req.body.name, req.body.lastName, req.body.age)
+    
+    async updateStudent(name, lastName, age, id){
+        let updateStudentFactory = await studentFactory.Build(name, lastName, age)
 
         if(updateStudentFactory){
 
             try{
-                await studentModel.findByIdAndUpdate(req.params.id, updateStudentFactory)
-                res.send(200)
+                await studentModel.findByIdAndUpdate(id, updateStudentFactory)
+                return 200
             }catch(e){
                 console.log(e)
-                res.send(400)
+                return 400
             }
 
         }else{
-            res.send(400)
+            return 400
         }
     }
-
 }
 
-module.exports = new StudentService()
+module.exports = new Student()

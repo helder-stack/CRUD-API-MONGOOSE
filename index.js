@@ -10,8 +10,8 @@ const connect = mongoose.connect('mongodb://localhost:27017/school', {
 app.use(bp.urlencoded({ extended: false }))
 app.use(bp.json())
 
-const studentController = require('./controllers/Student.js')
-app.use('/student', studentController)
+const studentRoutes = require('./routes/StudentRoutes.js')
+app.use('/student', studentRoutes)
 
 app.listen(3001, error => {
     if (!error) {
